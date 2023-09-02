@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb-container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: senha_admin
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  reservations:
+    build:
+      context: .
+      dockerfile: ./apps/reservations/Dockerfile
+      target: development
+    command: npm run start:dev reservations
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+
+networks:
+  app-network:
+    driver: bridge
